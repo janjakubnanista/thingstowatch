@@ -55,7 +55,9 @@ var _              = require('lodash'),
                 build: buildDirectory,
                 releaseBuild: path.join(buildDirectory, 'release'),
                 dist: distDirectory,
-                releaseDist: path.join(distDirectory, 'release')
+                releaseDist: path.join(distDirectory, 'release'),
+                theme: path.resolve(__dirname, 'content/themes/thingstowatch'),
+                modules: path.resolve(__dirname, 'node_modules')
             },
             // Standard build type, for when we have nightlies again.
             buildType: 'Build',
@@ -395,6 +397,33 @@ var _              = require('lodash'),
                     expand: true,
                     cwd: '<%= paths.releaseBuild %>/',
                     src: ['**']
+                }
+            },
+
+            sass: {
+                options: {
+                    includePaths: ['<%= paths.modules %>'],
+                },
+                dev: {
+                    files: [{
+                        expand: true,
+                        cwd: '<%= paths.theme %>/sources/sass',
+                        src: '*.scss',
+                        dest: '<%= paths.theme %>/assets/css',
+                        ext: '.css'
+                    }]
+                },
+                release: {
+                    options: {
+                        outputStyle: 'compressed'
+                    },
+                    files: [{
+                        expand: true,
+                        cwd: '<%= paths.theme %>/sources/sass',
+                        src: '*.scss',
+                        dest: '<%= paths.theme %>/assets/css',
+                        ext: '.css'
+                    }]
                 }
             },
 
