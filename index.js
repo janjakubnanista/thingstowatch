@@ -7,6 +7,9 @@ var express,
     parentApp,
     errors;
 
+var path = require('path');
+var hbs = require('express-hbs');
+
 // Make sure dependencies are installed and file system permissions are correct.
 require('./core/server/utils/startup-check').check();
 
@@ -21,6 +24,16 @@ parentApp = express();
 ghost().then(function (ghostServer) {
     // Mount our ghost instance on our desired subdirectory path if it exists.
     parentApp.use(ghostServer.config.paths.subdir, ghostServer.rootApp);
+
+    // Load helpers if available
+    try {
+        var helpersPath = path.join(ghostServer.config.paths.contentPath, 'helpers');
+        var helpers = require(helpersPath);
+
+        helpers(hbs);
+    } catch (error) {
+        console.error(('Error loading helpers: ' + error.message).red);
+    }
 
     // Let ghost handle starting our server instance.
     ghostServer.start(parentApp);
